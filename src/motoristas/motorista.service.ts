@@ -1,7 +1,15 @@
+import isMaiorDeIdade from 'src/utils/valida.idade';
 import { NestResponseBuilder } from './../core/http/nest-response-builder';
 import { Motorista } from './entities/motorista.entity';
 import { Database } from './database/database';
-import { ConflictException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpStatus,
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
+import isValidCPF from 'src/utils/valida.cpf';
 
 @Injectable()
 export class MotoristaService {
@@ -20,6 +28,22 @@ export class MotoristaService {
         message: 'CPF já cadastrado',
       });
     }
+
+    const CPFValido = isValidCPF(motorista.CPF);
+    if (!CPFValido) {
+      throw new BadRequestException({
+        statusCode: 400,
+        message: 'CPF invalido',
+      });
+    }
+    const maiorQue = isMaiorDeIdade(motorista.dataNascimento);
+    if (!maiorQue) {
+      throw new BadRequestException({
+        statusCode: 400,
+        message: 'Somente maiores de 18 anos.',
+      });
+    }
+
     await this.database.gravar(motorista);
     motorista.blocked = false;
     return motorista;
@@ -34,7 +58,7 @@ export class MotoristaService {
   public async atualizaStatus(CPF: number) {
     const motorista = await this.getMotorista(CPF);
     if (!motorista) {
-      throw new ConflictException({
+      throw new NotFoundException({
         statusCode: 404,
         message: 'CPF não cadastrado',
       });
@@ -58,7 +82,7 @@ export class MotoristaService {
   public async atualizaMotorista(CPF: number, body: Motorista) {
     const motorista = await this.getMotorista(CPF);
     if (!motorista) {
-      throw new ConflictException({
+      throw new NotFoundException({
         statusCode: 404,
         message: 'CPF não cadastrado',
       });
@@ -93,7 +117,7 @@ export class MotoristaService {
     const motorista = await this.getMotorista(CPF);
     const motoristas = await this.database.getMotoristas();
     if (!motorista) {
-      throw new ConflictException({
+      throw new NotFoundException({
         statusCode: 404,
         message: 'CPF não cadastrado',
       });

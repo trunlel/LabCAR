@@ -1,9 +1,9 @@
+import { NestResponseBuilder } from './../core/http/nest-response-builder';
 import { Database } from './database/database';
 import { Database as databasepassageiro } from '../passageiros/database/database';
 import { Database as databasemotoristas } from '../motoristas/database/database';
-import { Injectable, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException, HttpStatus } from '@nestjs/common';
 import { Viagens } from './entities/viagens.entity';
-import { ViagensProximas } from './entities/viagens.motorista';
 
 @Injectable()
 export class ViagensService {
@@ -21,8 +21,8 @@ export class ViagensService {
   public async criarViagem(viagem: Viagens): Promise<Viagens> {
     const passageiroExiste = await this.getPassageiro(viagem.ID);
     if (!passageiroExiste) {
-      throw new ConflictException({
-        statusCode: 409,
+      throw new NotFoundException({
+        statusCode: 404,
         message: 'ID não cadastrado',
       });
     }
@@ -33,7 +33,17 @@ export class ViagensService {
   }
 
   public async getViagens(endereco: string) {
-    const viagens = await this.database.getViagens();
-    return viagens;
+    const travels = await this.database.getViagens();
+    const driverAddress = { endereco };
+    const createdTravels = travels.filter(
+      (travels) => travels.status === 'CREATED',
+    );
+
+    const body = { driverAddress, createdTravels };
+    return new NestResponseBuilder()
+      .withStatus(HttpStatus.OK)
+      .withHeaders({ Location: 'viagens/proximas' })
+      .withBody(body)
+      .build();
   }
 }

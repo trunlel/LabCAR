@@ -1,12 +1,15 @@
+import isValidCPF from 'src/utils/valida.cpf';
 import { Database } from './database/database';
 import {
   Injectable,
   ConflictException,
   NotFoundException,
   HttpStatus,
+  BadRequestException,
 } from '@nestjs/common';
 import { Passageiro } from './entities/passageiro.entity';
 import { NestResponseBuilder } from 'src/core/http/nest-response-builder';
+import isMaiorDeIdade from 'src/utils/valida.idade';
 
 @Injectable()
 export class PassageirosService {
@@ -25,13 +28,23 @@ export class PassageirosService {
         message: 'CPF já cadastrado',
       });
     }
+    const CPFValido = isValidCPF(passageiro.CPF);
+    if (!CPFValido) {
+      throw new BadRequestException({
+        statusCode: 400,
+        message: 'CPF invalido',
+      });
+    }
+    const maiorQue = isMaiorDeIdade(passageiro.dataNascimento);
+    if (!maiorQue) {
+      throw new BadRequestException({
+        statusCode: 400,
+        message: 'Somente maiores de 18 anos.',
+      });
+    }
     await this.database.gravar(passageiro);
     passageiro.ID;
     return passageiro;
-  }
-
-  findAll() {
-    return `This action returns all passageiros`;
   }
 
   public async buscaPassageiro(CPF: number) {
@@ -54,7 +67,7 @@ export class PassageirosService {
   public async atualizaPassageiro(CPF: number, body: Passageiro) {
     const passageiro = await this.getPassageiro(CPF);
     if (!passageiro) {
-      throw new ConflictException({
+      throw new NotFoundException({
         statusCode: 404,
         message: 'CPF não cadastrado',
       });
@@ -87,7 +100,7 @@ export class PassageirosService {
     const passageiro = await this.getPassageiro(CPF);
     const passageiros = await this.database.getPassageiro();
     if (!passageiro) {
-      throw new ConflictException({
+      throw new NotFoundException({
         statusCode: 404,
         message: 'CPF não cadastrado',
       });

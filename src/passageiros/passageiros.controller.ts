@@ -51,6 +51,11 @@ export class PassageirosController {
 
   @Delete(':CPF')
   public async apagaPassageiro(@Param('CPF') CPF: number) {
-    return this.service.apagaPassageiro(CPF);
+    const passageiro = this.service.apagaPassageiro(CPF);
+    return new NestResponseBuilder()
+      .withStatus(HttpStatus.OK)
+      .withHeaders({ Location: `passageiros/${CPF}` })
+      .withBody(passageiro)
+      .build();
   }
 }

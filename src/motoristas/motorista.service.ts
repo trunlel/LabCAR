@@ -106,6 +106,7 @@ export class MotoristaService {
         message: 'CPF já cadastrado',
       });
     }
+
     await this.database.updateMotorista(atualizaMotoristas);
     return new NestResponseBuilder()
       .withStatus(HttpStatus.OK)

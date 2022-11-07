@@ -7,6 +7,7 @@ import {
   Length,
   MaxLength,
 } from 'class-validator';
+import { DataValida } from 'src/utils/valida.idade.decorator';
 
 export class Passageiro {
   @MaxLength(50, {
@@ -22,6 +23,7 @@ export class Passageiro {
       message: 'Formato invalido, porfavor utilize: YYYY-MM-DD',
     },
   )
+  @DataValida()
   dataNascimento: Date;
 
   @IsNotEmpty()

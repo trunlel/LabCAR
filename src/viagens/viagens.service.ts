@@ -1,7 +1,6 @@
 import { NestResponseBuilder } from './../core/http/nest-response-builder';
 import { Database } from './database/database';
 import { Database as databasepassageiro } from '../passageiros/database/database';
-import { Database as databasemotoristas } from '../motoristas/database/database';
 import { Injectable, NotFoundException, HttpStatus } from '@nestjs/common';
 import { Viagens } from './entities/viagens.entity';
 
@@ -10,7 +9,6 @@ export class ViagensService {
   constructor(
     private database: Database,
     private databasePassageiro: databasepassageiro,
-    private databaseMotoristas: databasemotoristas,
   ) {}
 
   public async getPassageiro(ID: string) {

@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { Passageiro } from './entities/passageiro.entity';
 import { NestResponseBuilder } from 'src/core/http/nest-response-builder';
-import isMaiorDeIdade from 'src/utils/valida.idade';
 
 @Injectable()
 export class PassageirosService {
@@ -35,13 +34,7 @@ export class PassageirosService {
         message: 'CPF invalido',
       });
     }
-    const maiorQue = isMaiorDeIdade(passageiro.dataNascimento);
-    if (!maiorQue) {
-      throw new BadRequestException({
-        statusCode: 400,
-        message: 'Somente maiores de 18 anos.',
-      });
-    }
+
     await this.database.gravar(passageiro);
     passageiro.ID;
     return passageiro;
@@ -72,6 +65,7 @@ export class PassageirosService {
         message: 'CPF não cadastrado',
       });
     }
+
     const passageiros = await this.database.getPassageiro();
     const atualizaPassageiros = (await passageiros).map((passageiro) => {
       if (passageiro.CPF == CPF) {
@@ -80,6 +74,14 @@ export class PassageirosService {
         passageiro.nome = body.nome;
         passageiro.endereco = body.endereco;
       }
+      const CPFValido = isValidCPF(passageiro.CPF);
+      if (!CPFValido) {
+        throw new BadRequestException({
+          statusCode: 400,
+          message: 'CPF invalido',
+        });
+      }
+
       return passageiro;
     });
     const passageiroExiste = await this.getPassageiro(body.CPF);

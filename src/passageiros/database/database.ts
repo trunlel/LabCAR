@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class Database {
-  private FILENAME = 'passageiro.json';
+  private FILENAME = 'src/passageiros/database/passageiro.json';
 
   public async getPassageiro(): Promise<Passageiro[]> {
     const passageirosInFile = await readFile(this.FILENAME, 'utf-8');

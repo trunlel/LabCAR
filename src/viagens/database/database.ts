@@ -3,7 +3,7 @@ import { writeFile, readFile } from 'fs/promises';
 import { Injectable } from '@nestjs/common';
 @Injectable()
 export class Database {
-  private FILENAME = 'viagens.json';
+  private FILENAME = 'src/viagens/database/viagens.json';
 
   public async getViagens(): Promise<Viagens[]> {
     const viagensInFile = await readFile(this.FILENAME, 'utf-8');

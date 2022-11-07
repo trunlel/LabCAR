@@ -4,7 +4,6 @@ import {
   ConflictException,
   NotFoundException,
   HttpStatus,
-  BadRequestException,
 } from '@nestjs/common';
 import { Passageiro } from './entities/passageiro.entity';
 import { NestResponseBuilder } from 'src/core/http/nest-response-builder';

@@ -35,9 +35,12 @@ export class IsDataValidaConstraint implements ValidatorConstraintInterface {
     }
     return false;
   }
+  defaultMessage?(validationArguments?: ValidationArguments): string {
+    return 'Somente maiores de 18 anos podem se cadastrar!';
+  }
 }
 
-export function DataValida(validationOptions?: ValidationOptions) {
+export function isDataValida(validationOptions?: ValidationOptions) {
   return function (object: any, propertyName: string) {
     registerDecorator({
       target: object.constructor,

@@ -1,4 +1,3 @@
-import isValidCPF from 'src/utils/valida.cpf';
 import { Database } from './database/database';
 import {
   Injectable,
@@ -25,13 +24,6 @@ export class PassageirosService {
       throw new ConflictException({
         statusCode: 409,
         message: 'CPF já cadastrado',
-      });
-    }
-    const CPFValido = isValidCPF(passageiro.CPF);
-    if (!CPFValido) {
-      throw new BadRequestException({
-        statusCode: 400,
-        message: 'CPF invalido',
       });
     }
 
@@ -73,13 +65,6 @@ export class PassageirosService {
         passageiro.dataNascimento = body.dataNascimento;
         passageiro.nome = body.nome;
         passageiro.endereco = body.endereco;
-      }
-      const CPFValido = isValidCPF(passageiro.CPF);
-      if (!CPFValido) {
-        throw new BadRequestException({
-          statusCode: 400,
-          message: 'CPF invalido',
-        });
       }
 
       return passageiro;

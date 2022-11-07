@@ -6,6 +6,8 @@ import {
   Length,
   MaxLength,
 } from 'class-validator';
+import { isCPFValido } from 'src/utils/valida.cpf.decorator';
+import { isDataValida } from 'src/utils/valida.idade.decorator';
 
 export class Motorista {
   @MaxLength(50, {
@@ -21,6 +23,7 @@ export class Motorista {
       message: 'Formato invalido, porfavor utilize: YYYY-MM-DD',
     },
   )
+  @isDataValida()
   dataNascimento: Date;
 
   @IsNotEmpty()
@@ -31,6 +34,7 @@ export class Motorista {
     },
   )
   @Length(11, 11)
+  @isCPFValido()
   CPF: number;
 
   @IsNotEmpty()

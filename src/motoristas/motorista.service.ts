@@ -1,4 +1,3 @@
-import isMaiorDeIdade from 'src/utils/valida.idade';
 import { NestResponseBuilder } from './../core/http/nest-response-builder';
 import { Motorista } from './entities/motorista.entity';
 import { Database } from './database/database';
@@ -6,10 +5,8 @@ import {
   ConflictException,
   HttpStatus,
   Injectable,
-  BadRequestException,
   NotFoundException,
 } from '@nestjs/common';
-import isValidCPF from 'src/utils/valida.cpf';
 
 @Injectable()
 export class MotoristaService {
@@ -26,21 +23,6 @@ export class MotoristaService {
       throw new ConflictException({
         statusCode: 409,
         message: 'CPF já cadastrado',
-      });
-    }
-
-    const CPFValido = isValidCPF(motorista.CPF);
-    if (!CPFValido) {
-      throw new BadRequestException({
-        statusCode: 400,
-        message: 'CPF invalido',
-      });
-    }
-    const maiorQue = isMaiorDeIdade(motorista.dataNascimento);
-    if (!maiorQue) {
-      throw new BadRequestException({
-        statusCode: 400,
-        message: 'Somente maiores de 18 anos.',
       });
     }
 

@@ -7,7 +7,8 @@ import {
   Length,
   MaxLength,
 } from 'class-validator';
-import { DataValida } from 'src/utils/valida.idade.decorator';
+import { isDataValida } from 'src/utils/valida.idade.decorator';
+import { isCPFValido } from 'src/utils/valida.cpf.decorator';
 
 export class Passageiro {
   @MaxLength(50, {
@@ -23,7 +24,7 @@ export class Passageiro {
       message: 'Formato invalido, porfavor utilize: YYYY-MM-DD',
     },
   )
-  @DataValida()
+  @isDataValida()
   dataNascimento: Date;
 
   @IsNotEmpty()
@@ -34,6 +35,7 @@ export class Passageiro {
     },
   )
   @Length(11, 11)
+  @isCPFValido()
   CPF: number;
 
   @IsString()
